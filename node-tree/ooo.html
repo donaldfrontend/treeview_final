@@ -1,0 +1,141 @@
+
+//filling parent category select box using ajax function
+$(document).ready(function()){
+
+    /*
+    we call first fill_parent_category ftc.
+    this ftc will be called when page load and will fill fill_parent_category select box
+    */
+    fill_parent_category();
+
+
+    function fill_parent_category()
+    {
+
+        /*ajax request where first option = url _ we sent request to a page
+            success callback fct to call a request successfuly completed and receive data from server
+            we fill parent_category select box with the data we get from success 
+        */ 
+        $.ajax({
+            url:'fill_parent_category',
+            success:function(data){
+                $('#parent_category').html(data);
+            }
+        });
+    }
+}
+
+
+
+
+//to submit form
+$('#treeview_form').on('submit', function(event){
+
+    /*
+    to stop to submit form_data to server : event.preventDefault();
+    data:$(this).serialize() : we define ethe data we want to send to the server, serialize() method will convert form data into url encoded sting
+    success callback fct will be called if request compteted succesffuly and it will receive DATA from server. 
+    we can access to those data via data argument in function(data)
+    */
+    event.preventDefault();
+    $.ajax({
+        url:"add.php",
+        method:"POST",
+        data:$(this).serialize(),
+        success:function(data){
+            fill_parent_category(); //will fetch category name and fill them in category selectbox
+            //we then clean form field after submiting form.
+            //the reset method will reset all form fields.
+            $('#treeview_form')[0].reset();
+            //we popup alert message on webpage
+            alert(data);
+        }
+    })
+
+});
+
+
+
+
+
+
+
+function fill_parent_category()
+{
+     /*ajax request where first option = url _ we sent request to a page
+        success callback fct to call a request successfuly completed and receive data from server
+        we fill parent_category select box with the data we get from success 
+    */ 
+    $.ajax({
+        url:'fill_parent_category.php',
+        success:function(data){
+            $('#parent_category').html(data);
+        }
+    });
+}
+
+
+//to submit form
+$('#treeview_form').on('submit', function(event){
+
+    /*
+    to stop to submit form_data to server : event.preventDefault();
+    data:$(this).serialize() : we define ethe data we want to send to the server, serialize() method will convert form data into url encoded sting
+    success callback fct will be called if request compteted succesffuly and it will receive DATA from server. 
+    we can access to those data via data argument in function(data)
+    */
+    event.preventDefault();
+    $.ajax({
+        url:"add.php",
+        method:"POST",
+        data:$(this).serialize(),
+        success:function(data){
+            fill_treeview();
+            fill_parent_category(); //will fetch category name and fill them in category selectbox
+            //we then clean form field after submiting form.
+            //the reset method will reset all form fields.
+            $('#treeview_form')[0].reset();
+            //we popup alert message on webpage
+            alert(data);
+        }
+    })
+
+});
+
+
+<script>
+
+    //filling parent category select box using ajax function
+    $(document).ready(function(){
+    
+        /*
+        we call firstfill_parent_category ftc.
+        this ftc will be called when page load and will fill fill_parent_category select box
+        */
+        fill_parent_category();
+        // also call thi function after submitting the form s that it diplays automatically the new added item
+    
+    
+    /*
+         this ftc will be called when page load and and make dynamic treeview display
+        */
+        fill_treeview();
+    
+    
+        //fetch data from category table and display on webpage
+        function fill_treeview(){
+            $.ajax({
+                url:"fetch.php",
+                dataType:"json",
+                success:function(data){
+    
+                    //we initializ the bootstrap treeview function
+                    $('#treeview').treeview({
+                        //data option will display DATA from table and make treeview
+                        data:data;
+                    });
+    
+                }
+            })
+        }
+    
